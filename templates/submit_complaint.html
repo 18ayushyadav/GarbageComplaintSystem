@@ -1,0 +1,154 @@
+<!--
+  submit_complaint.html — Complaint Submission Form
+  
+  Features:
+  - Bootstrap 5 styled form with validation
+  - Image upload with live preview
+  - Google Maps link helper
+  - Auto-fill for authenticated users
+-->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="form-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Page Header -->
+                <div class="text-center mb-4">
+                    <h1 class="section-title">
+                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                        Report a Garbage Issue
+                    </h1>
+                    <p class="section-subtitle">
+                        Help keep your community clean by reporting garbage problems. 
+                        Your complaint will be sent directly to municipal authorities.
+                    </p>
+                </div>
+
+                <!-- Complaint Form -->
+                <div class="glass-card form-card">
+                    <form method="POST" enctype="multipart/form-data" id="complaint-form" novalidate>
+                        {% csrf_token %}
+
+                        <!-- ─── Reporter Information ─────────────────────────── -->
+                        <div class="form-section-header">
+                            <i class="bi bi-person-fill"></i> Your Information
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="reporter-name" class="form-label">
+                                    Full Name <span class="text-danger">*</span>
+                                </label>
+                                {{ form.reporter_name }}
+                                {% if form.reporter_name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.reporter_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reporter-email" class="form-label">
+                                    Email Address <span class="text-danger">*</span>
+                                </label>
+                                {{ form.reporter_email }}
+                                {% if form.reporter_email.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.reporter_email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reporter-phone" class="form-label">
+                                    Phone Number
+                                </label>
+                                {{ form.reporter_phone }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="priority" class="form-label">
+                                    Priority Level <span class="text-danger">*</span>
+                                </label>
+                                {{ form.priority }}
+                            </div>
+                        </div>
+
+                        <!-- ─── Location Details ──────────────────────────────── -->
+                        <div class="form-section-header">
+                            <i class="bi bi-geo-alt-fill"></i> Location Details
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label for="location-text" class="form-label">
+                                    Location Description <span class="text-danger">*</span>
+                                </label>
+                                {{ form.location_text }}
+                                {% if form.location_text.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.location_text.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <label for="google-maps-link" class="form-label">
+                                    Google Maps Link
+                                </label>
+                                {{ form.google_maps_link }}
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    Open Google Maps → Find location → Click "Share" → Copy link
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ─── Complaint Details ─────────────────────────────── -->
+                        <div class="form-section-header">
+                            <i class="bi bi-pencil-fill"></i> Complaint Details
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label for="description" class="form-label">
+                                    Description <span class="text-danger">*</span>
+                                </label>
+                                {{ form.description }}
+                                {% if form.description.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <label for="complaint-image" class="form-label">
+                                    Photo Evidence <span class="text-danger">*</span>
+                                </label>
+                                {{ form.image }}
+                                {% if form.image.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.image.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    Upload a clear photo (JPG, PNG — max 5MB)
+                                </div>
+                                <!-- Image Preview Area -->
+                                <div class="image-preview-container mt-3" id="image-preview-container" style="display: none;">
+                                    <img src="" alt="Preview" id="image-preview" class="image-preview">
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="clear-image-btn">
+                                        <i class="bi bi-x-circle"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ─── Submit Button ──────────────────────────────────── -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-accent btn-lg" id="submit-complaint-btn">
+                                <i class="bi bi-send-fill"></i> Submit Complaint
+                            </button>
+                        </div>
+
+                        <p class="text-center text-muted mt-3 small">
+                            <i class="bi bi-shield-check"></i>
+                            Your information is secure. Complaints are forwarded only to authorized municipal staff.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

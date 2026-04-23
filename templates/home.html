@@ -1,0 +1,184 @@
+<!--
+  home.html — Landing Page
+  
+  Sections:
+  1. Hero section with CTA
+  2. Live statistics cards
+  3. How It Works steps
+  4. Swachh Bharat integration note
+-->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  HERO SECTION                                                        -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-7">
+                <div class="hero-badge mb-3">
+                    <span class="badge glass-badge">
+                        <i class="bi bi-lightning-charge-fill"></i> Swachh Bharat Compatible
+                    </span>
+                </div>
+                <h1 class="hero-title">
+                    Report Garbage.<br>
+                    <span class="text-gradient">Keep India Clean.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Spot a garbage problem in your area? Report it instantly with photo evidence 
+                    and location. Our system notifies municipal authorities in real-time to 
+                    ensure swift action.
+                </p>
+                <div class="hero-actions">
+                    <a href="{% url 'submit_complaint' %}" class="btn btn-accent btn-lg me-3" id="hero-report-btn">
+                        <i class="bi bi-camera-fill"></i> Report an Issue
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-lg" id="hero-dashboard-btn">
+                        <i class="bi bi-speedometer2"></i> View Dashboard
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="hero-visual">
+                    <div class="floating-card card-1">
+                        <i class="bi bi-camera-fill"></i>
+                        <span>Upload Photo</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Add Location</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="bi bi-send-fill"></i>
+                        <span>Submit & Notify</span>
+                    </div>
+                    <div class="hero-circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  STATS SECTION                                                       -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section class="stats-section" id="stats-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-card glass-card text-center" id="stat-total">
+                    <div class="stat-icon">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
+                    <h2 class="stat-number text-gradient">{{ stats.total|default:"0" }}</h2>
+                    <p class="stat-label">Total Complaints</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card glass-card text-center" id="stat-pending">
+                    <div class="stat-icon text-warning">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <h2 class="stat-number text-warning">{{ stats.pending|default:"0" }}</h2>
+                    <p class="stat-label">Pending</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card glass-card text-center" id="stat-progress">
+                    <div class="stat-icon text-info">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    <h2 class="stat-number text-info">{{ stats.in_progress|default:"0" }}</h2>
+                    <p class="stat-label">In Progress</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card glass-card text-center" id="stat-resolved">
+                    <div class="stat-icon text-success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <h2 class="stat-number text-success">{{ stats.resolved|default:"0" }}</h2>
+                    <p class="stat-label">Resolved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  HOW IT WORKS SECTION                                                -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section class="how-it-works-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Three simple steps to report a garbage issue</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="step-card glass-card text-center" id="step-1">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <i class="bi bi-camera-fill"></i>
+                    </div>
+                    <h4>Capture & Report</h4>
+                    <p>Take a photo of the garbage issue and fill in the complaint form with location details.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card glass-card text-center" id="step-2">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <h4>Instant Notification</h4>
+                    <p>Municipal authorities receive an instant email notification with all complaint details.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card glass-card text-center" id="step-3">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h4>Track & Resolve</h4>
+                    <p>Track your complaint status on the dashboard. Get notified when it's resolved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  SWACHH BHARAT SECTION                                               -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section class="integration-section">
+    <div class="container">
+        <div class="glass-card integration-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3>
+                        <i class="bi bi-flag-fill text-warning"></i>
+                        Swachh Bharat Mission Compatible
+                    </h3>
+                    <p class="mb-0">
+                        This system is designed with future government integration in mind. 
+                        It can connect with <strong>Swachh Bharat Mission</strong> APIs to automatically 
+                        forward complaints to municipal corporations, gram panchayats, and smart city 
+                        platforms. Together, we can build a cleaner, healthier India.
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <a href="https://sbm.gov.in/" target="_blank" class="btn btn-outline-light">
+                        Learn More <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

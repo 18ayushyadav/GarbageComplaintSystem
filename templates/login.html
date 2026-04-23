@@ -1,0 +1,63 @@
+<!--
+  login.html — User Login Page
+  
+  Clean authentication form with Bootstrap 5 styling.
+  Includes link to registration page.
+-->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="glass-card auth-card">
+                    <div class="text-center mb-4">
+                        <div class="auth-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h2>Welcome Back</h2>
+                        <p class="text-muted">Sign in to track your complaints</p>
+                    </div>
+
+                    <form method="POST" id="login-form">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="login-username" class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="login-username"
+                                       name="username" placeholder="Enter your username" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="login-password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="login-password"
+                                       name="password" placeholder="Enter your password" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-accent btn-lg" id="login-submit-btn">
+                                <i class="bi bi-box-arrow-in-right"></i> Sign In
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+
+                    <p class="text-center mb-0">
+                        Don't have an account?
+                        <a href="{% url 'register' %}" class="text-accent fw-bold">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

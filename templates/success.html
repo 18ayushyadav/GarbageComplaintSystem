@@ -1,0 +1,98 @@
+<!--
+  success.html — Complaint Submission Confirmation
+  
+  Displayed after a complaint is successfully submitted.
+  Shows the reference number and complaint summary.
+-->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="success-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="glass-card success-card text-center">
+                    <!-- Success Animation Icon -->
+                    <div class="success-icon-wrapper">
+                        <div class="success-circle">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
+                    </div>
+
+                    <h1 class="mt-4 mb-2">Complaint Submitted!</h1>
+                    <p class="text-muted mb-4">
+                        Your complaint has been recorded and municipal authorities have been notified.
+                    </p>
+
+                    <!-- Reference Number Badge -->
+                    <div class="reference-badge mb-4" id="reference-badge">
+                        <span class="reference-label">Reference Number</span>
+                        <span class="reference-number">{{ complaint.reference_number }}</span>
+                    </div>
+
+                    <!-- Complaint Summary -->
+                    <div class="summary-card">
+                        <div class="row text-start">
+                            <div class="col-sm-6 mb-3">
+                                <small class="text-muted d-block">Reporter</small>
+                                <strong>{{ complaint.reporter_name }}</strong>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <small class="text-muted d-block">Priority</small>
+                                <span class="badge bg-{{ complaint.priority_color }}">{{ complaint.get_priority_display }}</span>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <small class="text-muted d-block">Location</small>
+                                <strong>{{ complaint.location_text }}</strong>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <small class="text-muted d-block">Status</small>
+                                <span class="badge bg-{{ complaint.status_color }}">{{ complaint.get_status_display }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Steps -->
+                    <div class="next-steps mt-4">
+                        <h5 class="mb-3"><i class="bi bi-info-circle"></i> What Happens Next?</h5>
+                        <div class="row g-3 text-start">
+                            <div class="col-md-4">
+                                <div class="next-step-item">
+                                    <i class="bi bi-envelope-check text-info"></i>
+                                    <small>Municipal authority receives your complaint via email</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="next-step-item">
+                                    <i class="bi bi-arrow-repeat text-warning"></i>
+                                    <small>Team reviews and begins resolution process</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="next-step-item">
+                                    <i class="bi bi-bell text-success"></i>
+                                    <small>You'll be notified when the issue is resolved</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{% url 'complaint_detail' complaint.reference_number %}" class="btn btn-accent" id="view-complaint-btn">
+                            <i class="bi bi-eye"></i> View Complaint
+                        </a>
+                        <a href="{% url 'submit_complaint' %}" class="btn btn-outline-light" id="submit-another-btn">
+                            <i class="bi bi-plus-circle"></i> Submit Another
+                        </a>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-light" id="go-dashboard-btn">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

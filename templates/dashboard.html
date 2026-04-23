@@ -1,0 +1,218 @@
+<!--
+  dashboard.html — Complaint Dashboard
+  
+  Features:
+  - Statistics cards at top
+  - Search bar + status/priority filters
+  - Responsive table listing all complaints
+  - Color-coded status badges
+  - Links to detailed complaint view
+-->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="container">
+        <!-- ─── Dashboard Header ──────────────────────────────────────────── -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <h1 class="section-title mb-0">
+                    <i class="bi bi-speedometer2"></i> Complaint Dashboard
+                </h1>
+                <p class="text-muted mb-0">Monitor and track all garbage complaints</p>
+            </div>
+            <a href="{% url 'submit_complaint' %}" class="btn btn-accent" id="dashboard-report-btn">
+                <i class="bi bi-plus-circle"></i> Report New Issue
+            </a>
+        </div>
+
+        <!-- ─── Stats Cards ───────────────────────────────────────────────── -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="glass-card mini-stat-card" id="dash-stat-total">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <small class="text-muted">Total</small>
+                            <h3 class="mb-0 text-gradient">{{ stats.total }}</h3>
+                        </div>
+                        <i class="bi bi-clipboard-data stat-icon-sm"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="glass-card mini-stat-card" id="dash-stat-pending">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <small class="text-muted">Pending</small>
+                            <h3 class="mb-0 text-warning">{{ stats.pending }}</h3>
+                        </div>
+                        <i class="bi bi-hourglass-split stat-icon-sm text-warning"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="glass-card mini-stat-card" id="dash-stat-progress">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <small class="text-muted">In Progress</small>
+                            <h3 class="mb-0 text-info">{{ stats.in_progress }}</h3>
+                        </div>
+                        <i class="bi bi-arrow-repeat stat-icon-sm text-info"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="glass-card mini-stat-card" id="dash-stat-resolved">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <small class="text-muted">Resolved</small>
+                            <h3 class="mb-0 text-success">{{ stats.resolved }}</h3>
+                        </div>
+                        <i class="bi bi-check-circle stat-icon-sm text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Search & Filters ──────────────────────────────────────────── -->
+        <div class="glass-card mb-4">
+            <form method="GET" action="{% url 'dashboard' %}" class="row g-3 align-items-end" id="dashboard-filter-form">
+                <div class="col-md-5">
+                    <label for="search-input" class="form-label">
+                        <i class="bi bi-search"></i> Search
+                    </label>
+                    <input type="text" class="form-control" id="search-input" name="search"
+                           value="{{ search_query }}" placeholder="Search by location, name, or reference...">
+                </div>
+                <div class="col-md-3">
+                    <label for="status-filter" class="form-label">
+                        <i class="bi bi-funnel"></i> Status
+                    </label>
+                    <select class="form-select" id="status-filter" name="status">
+                        <option value="">All Statuses</option>
+                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
+                        <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="priority-filter" class="form-label">
+                        <i class="bi bi-exclamation-triangle"></i> Priority
+                    </label>
+                    <select class="form-select" id="priority-filter" name="priority">
+                        <option value="">All Priorities</option>
+                        <option value="low" {% if priority_filter == 'low' %}selected{% endif %}>Low</option>
+                        <option value="medium" {% if priority_filter == 'medium' %}selected{% endif %}>Medium</option>
+                        <option value="high" {% if priority_filter == 'high' %}selected{% endif %}>High</option>
+                        <option value="critical" {% if priority_filter == 'critical' %}selected{% endif %}>Critical</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-accent w-100" id="apply-filters-btn">
+                        <i class="bi bi-funnel-fill"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ─── Active Filters Indicator ──────────────────────────────────── -->
+        {% if search_query or status_filter or priority_filter %}
+        <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+            <span class="text-muted">Active filters:</span>
+            {% if search_query %}
+                <span class="badge glass-badge">Search: "{{ search_query }}"</span>
+            {% endif %}
+            {% if status_filter %}
+                <span class="badge glass-badge">Status: {{ status_filter }}</span>
+            {% endif %}
+            {% if priority_filter %}
+                <span class="badge glass-badge">Priority: {{ priority_filter }}</span>
+            {% endif %}
+            <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-x-circle"></i> Clear All
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- ─── Complaints Table ──────────────────────────────────────────── -->
+        <div class="glass-card table-card">
+            {% if complaints %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="complaints-table">
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Reporter</th>
+                            <th>Location</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for complaint in complaints %}
+                        <tr class="complaint-row" id="complaint-row-{{ complaint.reference_number }}">
+                            <td>
+                                <code class="text-accent">{{ complaint.reference_number }}</code>
+                            </td>
+                            <td>
+                                <strong>{{ complaint.reporter_name }}</strong>
+                                <br><small class="text-muted">{{ complaint.reporter_email }}</small>
+                            </td>
+                            <td>
+                                <i class="bi bi-geo-alt text-danger"></i>
+                                {{ complaint.location_text|truncatechars:40 }}
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ complaint.priority_color }}">
+                                    {{ complaint.get_priority_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ complaint.status_color }}">
+                                    {{ complaint.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <small>{{ complaint.created_at|date:"d M Y" }}</small>
+                                <br><small class="text-muted">{{ complaint.created_at|time:"h:i A" }}</small>
+                            </td>
+                            <td>
+                                <a href="{% url 'complaint_detail' complaint.reference_number %}"
+                                   class="btn btn-sm btn-outline-light" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer">
+                <small class="text-muted">
+                    Showing {{ complaints|length }} complaint{{ complaints|length|pluralize }}
+                </small>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <h4 class="mt-3 text-muted">No Complaints Found</h4>
+                <p class="text-muted">
+                    {% if search_query or status_filter or priority_filter %}
+                        No complaints match your search criteria. Try adjusting filters.
+                    {% else %}
+                        No complaints have been filed yet. Be the first to report an issue!
+                    {% endif %}
+                </p>
+                <a href="{% url 'submit_complaint' %}" class="btn btn-accent">
+                    <i class="bi bi-plus-circle"></i> Report an Issue
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

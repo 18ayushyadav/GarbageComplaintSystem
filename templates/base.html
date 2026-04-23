@@ -1,0 +1,147 @@
+<!--
+  base.html — Master Template for Smart Garbage Complaint System
+  
+  Features:
+  - Bootstrap 5.3 with dark theme
+  - Google Fonts (Inter)
+  - Responsive navbar
+  - Flash message display
+  - Footer with attribution
+  - Custom CSS and JS includes
+-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smart Garbage Complaint System — Report garbage issues in your area and help keep your city clean. File complaints with photo evidence and location tracking.">
+    <meta name="keywords" content="garbage complaint, waste management, Swachh Bharat, clean city, municipal, sanitation">
+    <title>{% block title %}{{ page_title|default:"Home" }}{% endblock %} — Smart Garbage Complaint System</title>
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts — Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!--  NAVBAR                                                           -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <nav class="navbar navbar-expand-lg sticky-top glass-navbar">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+                <span class="brand-icon">🗑️</span> SmartGarbage
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto align-items-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link {% if page_title == 'Home' %}active{% endif %}" href="{% url 'home' %}">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if page_title == 'Submit Complaint' %}active{% endif %}" href="{% url 'submit_complaint' %}">
+                            <i class="bi bi-plus-circle"></i> Report Issue
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if page_title == 'Dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/" target="_blank">
+                                <i class="bi bi-gear"></i> Admin
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.first_name|default:user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end glass-dropdown">
+                                <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-list-check"></i> My Complaints</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-accent btn-sm ms-2" href="{% url 'register' %}">
+                                <i class="bi bi-person-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!--  FLASH MESSAGES                                                   -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show glass-alert" role="alert" id="flash-message-{{ forloop.counter }}">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!--  MAIN CONTENT                                                     -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!--  FOOTER                                                           -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">
+                        <span class="brand-icon">🗑️</span>
+                        <strong>Smart Garbage Complaint System</strong>
+                    </p>
+                    <small class="text-muted">Empowering citizens for a cleaner India 🇮🇳</small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-muted">
+                        Built with Django &bull; Compatible with
+                        <a href="https://sbm.gov.in/" target="_blank" class="footer-link">Swachh Bharat Mission</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
